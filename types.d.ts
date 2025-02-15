@@ -1,0 +1,136 @@
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  icon?: React.ReactNode;
+  styles?: string;
+}
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  error?: string;
+  icon?: React.ReactNode;
+  styles?: string;
+  options: {
+    value: string;
+    label: string;
+  }[];
+}
+
+interface RegisterFormTypes {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: string;
+  city?: string;
+}
+
+interface LoginFormTypes {
+  email: string;
+  password: string;
+}
+
+interface OrderFilterTypes {
+  filter?: string;
+  setFilter?: (filter: string) => void;
+  filters?: string[];
+  orderType: string;
+  setOrderType: (orderType: string) => void;
+  types: string[];
+  toggleFilter: () => void;
+}
+
+interface ModalProps {
+  title: string;
+  children: React.ReactNode;
+  toggleModal: () => void;
+  isOpen: boolean;
+}
+
+interface PackageDetails {
+  image: File | null;
+  name: string;
+  texture: string;
+  notes: string;
+}
+
+interface PickupDetails {
+  pickupDate: string;
+  pickupTime: string;
+  pickupLocation: string;
+  pickupLocationLat: number;
+  pickupLocationLng: number;
+}
+
+interface DeliveryDetails {
+  receiverName: string;
+  receiverPhone: string;
+  deliveryLocation: string;
+  deliveryLocationLat: number;
+  deliveryLocationLng: number;
+}
+
+interface DispatchFormContextType {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  packageDetails: PackageDetails;
+  setPackageDetails: (details: PackageDetails) => void;
+  imgPreview: string | null;
+  setImgPreview: (preview: string | null) => void;
+  handlePackageDetails: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleNextStep: () => void;
+  handlePrevStep: () => void;
+  pickupDetails: PickupDetails;
+  setPickupDetails: (details: PickupDetails) => void;
+  handlePickupDetails: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  deliveryDetails: DeliveryDetails;
+  setDeliveryDetails: (details: DeliveryDetails) => void;
+  handleDeliveryDetails: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmitWithPayment: () => void;
+  handleSubmitWithoutPayment: () => void;
+  packageErrors: PackageDetails | undefined;
+  setPackageErrors: (errors: PackageDetails) => void;
+  pickupErrors: PickupDetails | undefined;
+  setPickupErrors: (errors: PickupDetails) => void;
+  deliveryErrors: DeliveryDetails | undefined;
+  setDeliveryErrors: (errors: DeliveryDetails) => void;
+  pickupAutocomplete: google.maps.places.Autocomplete | null;
+  setPickupAutocomplete: (autocomplete: google.maps.places.Autocomplete | null) => void;
+  deliveryAutocomplete: google.maps.places.Autocomplete | null;
+  setDeliveryAutocomplete: (autocomplete: google.maps.places.Autocomplete | null) => void;
+  handlePlaceSelect: (type: "pickup" | "delivery") => void;
+  loading: boolean;
+}
+
+interface AuthContextType {
+    user: Models.User<Models.Preferences> | null;
+    userData: Models.Document | null;
+    loading: boolean;
+    register: (form: RegisterFormTypes) => Promise<void>;
+    login: (form: LoginFormTypes) => Promise<void>;
+    logout: () => Promise<void>;
+    updatePhoneNumber: (phone: string) => Promise<void>;
+    updateLocation: (location: string) => Promise<void>;
+}
+
+interface PackageOrderContextType {
+    orders: Models.Document[]
+    createOrder: (packageDetails: PackageDetails, deliveryDetails: DeliveryDetails, pickupDetails: PickupDetails, price: number, isPaid: boolean) => Promise<void>
+    loading: boolean
+    allOrders: Models.Document[]
+    acceptOrder: (orderId: string) => Promise<void>
+    markAsDelivered: (orderId: string) => Promise<void>
+    markPaymentAsReceived: (orderId: string) => Promise<void>
+}
+
+interface MapsContextType {
+    isLocationEnabled: boolean
+    getRiderLocation: () => Promise<{latitude: number, longitude: number}>
+    askForLocation: () => Promise<void>
+    reverseGeocode: (latitude: number, longitude: number) => Promise<null | undefined>
+    isFetchingLocation: boolean
+    riderLocation: {address: string, city: string, country: string} | null
+}
+

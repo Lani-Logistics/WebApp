@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&family=Sora:wght@100..800&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --primary-1: rgb(250, 120, 29);
+  --primary-2: #22c55e;
+  --secondary: #fefefe;
+  --background: #f9f9f9;
+  --background-2: #f2f2f2;
+  --line: #eee;
+  --main: #444;
+  --sub: #888;
+  --mid: #fefefe;
+}
+.dark {
+  --primary: #fa781d;
+  --primary-2: #22c55e;
+  --secondary: #121212;
+  --background: #212121;
+  --background-2: #313131;
+  --mid: #313131;
+  --line: #333;
+  --main: #fefefe;
+  --sub: #aaa;
+}
+
+@theme{
+  --font-sans: 'Instrument Sans', sans-serif;
+  --font-sora: 'Outfit', sans-serif;
+  --color-primary: var(--primary-1);
+  --color-primary-2: var(--primary-2);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-background-2: var(--background-2);
+  --color-line: var(--line);
+  --color-main: var(--main);
+  --color-sub: var(--sub);
+  --color-mid: var(--mid);
+}
+
+*{
+  @apply outline-none;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-secondary);
+  color: var(--color-main);
+}
+
+
+.line{
+  @apply relative before:absolute before:bottom-0 before:h-[1px] before:w-1/2 before:bg-line before:left-1/2 before:-translate-x-1/2
+}
+
+.center {
+  @apply flex justify-center items-center;
+}
+
+.main {
+  @apply max-w-[90%] 2xl:max-w-[1280px] mx-auto;
+}
+
+.layout {
+  @apply max-w-[90%] md:max-w-[700px] mx-auto;
+}
+
+.btn{
+  @apply flex items-center justify-center gap-2 font-sora font-medium rounded-full text-base;
+}
+
+button{
+  @apply cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
