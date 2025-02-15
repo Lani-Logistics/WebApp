@@ -1,9 +1,12 @@
 import { MessageCircleWarning} from "lucide-react";
-import { useDispatchForm } from "@/Hooks";
+import { useDispatchForm, useAdmin, useAuth } from "@/Hooks";
 import { calculatePrice } from "@/Utils/helpers";
 import { FormAnimation } from "@/Animations";
 
 const SummaryAndPayment = () => {
+  const { rates } = useAdmin();
+  const { userData } = useAuth();
+  const rate = userData?.location === "Uyo" ? rates?.rateForUyo : rates?.rateForPh;
   const {pickupDetails, deliveryDetails, loading, handleSubmitWithPayment, handleSubmitWithoutPayment} = useDispatchForm()
   const pickup = {
     lat: pickupDetails.pickupLocationLat,
@@ -14,7 +17,7 @@ const SummaryAndPayment = () => {
     lon: deliveryDetails.deliveryLocationLng
   }
 
-  const price = calculatePrice(pickup, delivery, 500)
+  const price = calculatePrice(pickup, delivery, rate)
   return (
     <FormAnimation>
       <div className="space-y-4">
@@ -31,7 +34,7 @@ const SummaryAndPayment = () => {
            
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-sub">Flat Rate</p>
-              <p className="text-sm font-medium font-sora text-main">&#8358; 500/km</p>
+              <p className="text-sm font-medium font-sora text-main">&#8358; {rate}/km</p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-sub">VAT</p>

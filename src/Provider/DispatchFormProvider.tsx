@@ -2,14 +2,16 @@ import { DispatchFormContext } from "@/Context/DispatchFormContext";
 import { useState } from "react";
 import { dispatchFormValidation } from "@/Utils/formValidation";
 import { toast } from "sonner";
-import { usePackageOrder, useAuth } from "@/Hooks";
+import { usePackageOrder, useAuth, useAdmin } from "@/Hooks";
 import { calculatePrice } from "@/Utils/helpers";
 import { databases, DB, USERS } from "@/Backend/appwrite";
 const DispatchFormProvider = ({ children }: { children: React.ReactNode }) => {
   const { createOrder, loading } = usePackageOrder();
   const { userData, user } = useAuth();
+  const { rates } = useAdmin();
   // States
  
+  const rate = userData?.location === "Uyo" ? rates?.rateForUyo : rates?.rateForPh;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [imgPreview, setImgPreview] = useState<string | null>(null);
@@ -168,7 +170,7 @@ const DispatchFormProvider = ({ children }: { children: React.ReactNode }) => {
         lat: deliveryDetails.deliveryLocationLat,
         lon: deliveryDetails.deliveryLocationLng,
       };
-      const price = calculatePrice(pickup, delivery, 500);
+      const price = calculatePrice(pickup, delivery, rate);
       if (userData?.walletBalance < price) {
         toast.error("Insufficient balance");
         return;
@@ -204,7 +206,7 @@ const DispatchFormProvider = ({ children }: { children: React.ReactNode }) => {
         lat: deliveryDetails.deliveryLocationLat,
         lon: deliveryDetails.deliveryLocationLng,
       };
-      const price = calculatePrice(pickup, delivery, 500);
+      const price = calculatePrice(pickup, delivery, rate);
      
       toast.promise(createOrder(packageDetails, deliveryDetails, pickupDetails, price, false), {
         loading: "Creating order...",

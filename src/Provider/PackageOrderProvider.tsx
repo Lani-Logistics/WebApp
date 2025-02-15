@@ -20,6 +20,7 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<Models.Document[]>([]);
+  const [parcels, setParcels] = useState<Models.Document[]>([]);
   const [allOrders, setAllOrders] = useState<Models.Document[]>([]);
 
   const createOrder = async (
@@ -105,10 +106,22 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [userData?.$id, userData?.location]);
 
+  const getParcels = useCallback(async () => {
+    try {
+      const orders = await databases.listDocuments(DB, DISPATCH, [
+        Query.orderDesc("$createdAt"),
+      ]);
+      setParcels(orders.documents);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   useEffect(() => {
     getUserOrders();
-    getAllOrders();
-  }, [getUserOrders, getAllOrders]);
+    getAllOrders(); 
+    getParcels();
+  }, [getUserOrders, getAllOrders, getParcels]);
 
   const acceptOrder = async (orderId: string) => {
     setLoading(true);
@@ -146,37 +159,38 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const updateRiderLocation = useCallback(async ()=>
-     navigator.geolocation.getCurrentPosition(
-     async (position) => {
-      const { latitude, longitude } = position.coords;
+  const updateRiderLocation = useCallback(
+    async () =>
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
 
-      if (userData?.role === "rider") {
-        await databases.updateDocument(DB, USERS, userData.$id, {
-          riderLatitude: latitude.toString(),
-          riderLongitude: longitude.toString(),
-        });
-      }
-      
-    },
-    (error) => {
-      console.log(error);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
-    }
-  ), [ userData?.$id, userData?.role]);
+          if (userData?.role === "rider") {
+            await databases.updateDocument(DB, USERS, userData.$id, {
+              riderLatitude: latitude.toString(),
+              riderLongitude: longitude.toString(),
+            });
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      ),
+    [userData?.$id, userData?.role]
+  );
 
   useEffect(() => {
-    if(isLocationEnabled) {
+    if (isLocationEnabled) {
       const interval = setInterval(() => {
         updateRiderLocation();
       }, 10000);
       return () => clearInterval(interval);
-    }
-    else{
+    } else {
       console.log("Location is not enabled");
     }
   }, [updateRiderLocation, isLocationEnabled]);
@@ -243,6 +257,7 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     acceptOrder,
     markAsDelivered,
     markPaymentAsReceived,
+    parcels,
   };
   return (
     <PackageOrderContext.Provider value={value}>

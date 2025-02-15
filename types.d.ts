@@ -113,6 +113,12 @@ interface AuthContextType {
     logout: () => Promise<void>;
     updatePhoneNumber: (phone: string) => Promise<void>;
     updateLocation: (location: string) => Promise<void>;
+    users: Models.Document[];
+    rates: Models.Document;
+    isUpdatingUyo: boolean;
+    isUpdatingPh: boolean;
+    updateRatesUyo: (rate: string) => Promise<void>;
+    updateRatesPh: (rate: string) => Promise<void>;
 }
 
 interface PackageOrderContextType {
@@ -123,6 +129,7 @@ interface PackageOrderContextType {
     acceptOrder: (orderId: string) => Promise<void>
     markAsDelivered: (orderId: string) => Promise<void>
     markPaymentAsReceived: (orderId: string) => Promise<void>
+    parcels: Models.Document[]
 }
 
 interface MapsContextType {

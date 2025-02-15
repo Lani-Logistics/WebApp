@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AuthContext } from "@/Context";
 import { ID, Models } from "appwrite";
-import client, { account, databases, DB, USERS } from "@/Backend/appwrite";
+import client, { account, databases, DB, USERS, ADMIN } from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -10,7 +10,24 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Models.User<Models.Preferences> | null>(
     null
   );
+  const [users, setUsers] = useState<Models.Document[]>([]);
   const [userData, setUserData] = useState<Models.Document>();
+  const [rates, setRates] = useState<Models.Document>();
+  const [isUpdatingUyo, setIsUpdatingUyo] = useState(false);
+  const [isUpdatingPh, setIsUpdatingPh] = useState(false);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await databases.listDocuments(DB, USERS);
+        setUsers(res.documents);
+      } catch (error) {
+        console.log(error);
+        throw new Error((error as Error).message);
+      }
+    };
+    getUsers();
+  }, []);
 
   const register = async (form: RegisterFormTypes) => {
     setLoading(true);
@@ -158,6 +175,48 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const getAdminSettings = useCallback(async () => {
+    try {
+      const res = await databases.getDocument(DB, ADMIN, "rates");
+      setRates(res);
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } 
+  }, []);
+
+  const updateRatesUyo = async (rate: string) => {
+    setIsUpdatingUyo(true);
+    try {
+      await databases.updateDocument(DB, ADMIN, "rates", {
+        rateForUyo: Number(rate),
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setIsUpdatingUyo(false);
+    }
+  };
+
+  const updateRatesPh = async (rate: string) => {
+    setIsUpdatingPh(true);
+    try {
+      await databases.updateDocument(DB, ADMIN, "rates", {
+        rateForPh: Number(rate),
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setIsUpdatingPh(false);
+    }
+  };
+
+  useEffect(() => {
+    getAdminSettings();
+  }, [getAdminSettings]);
+
   useEffect(() => {
     const unsubscribe = client.subscribe(
       [`databases.${DB}.collections.${USERS}.documents`],
@@ -168,6 +227,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           )
         ) {
           getUserData();
+          getAdminSettings();
         }
       }
     );
@@ -175,7 +235,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       unsubscribe();
     };
-  }, [getUserData]);
+  }, [getUserData, getAdminSettings]);
+
+
 
   const value: AuthContextType = {
     user,
@@ -186,6 +248,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     logout,
     updatePhoneNumber,
     updateLocation,
+    users,
+    rates,
+    isUpdatingUyo,
+    isUpdatingPh,
+    updateRatesUyo,
+    updateRatesPh,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

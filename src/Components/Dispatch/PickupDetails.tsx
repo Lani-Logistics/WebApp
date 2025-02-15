@@ -3,6 +3,7 @@ import { Input } from "../UI";
 import { useDispatchForm } from "@/Hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { Autocomplete } from "@react-google-maps/api";
+import { FormAnimation } from "@/Animations";
 
 const PickupDetails = () => {
   const {
@@ -21,7 +22,7 @@ const PickupDetails = () => {
   };
   return (
     <>
-    
+    <FormAnimation>
       <div className="space-y-4">
         <h1 className="text-lg font-sora font-medium text-center line pb-2">
           Pickup Details
@@ -112,6 +113,7 @@ const PickupDetails = () => {
           </motion.div>
         </div>
       </div>
+      </FormAnimation>
     </>
   );
 };

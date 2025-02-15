@@ -4,6 +4,7 @@ import { Role, Register, Login, ResetPassword, NewPassword, Location } from "@/S
 import { Dashboard, Profile, Notifications, OrderPreview, NotFound } from "@/Screens/Main";
 import { CustomerOrders, Dispatch } from "@/Screens/Customer";
 import { AvailableOrders, CompletedOrders } from "@/Screens/Rider";
+import { Overview, Users, UserDetails } from "@/Screens/Admin";
 import { ScrollToTop } from "@/Components/UI";
 import { Toaster } from "sonner";
 
@@ -29,6 +30,11 @@ const App = () => {
         <Route path="/orders/:id" element={<OrderPreview/>}/>
         <Route path="/orders/available" element={<AvailableOrders/>}/>
         <Route path="/orders/completed" element={<CompletedOrders/>}/>
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<Overview/>}/>
+        <Route path="/admin/users" element={<Users/>}/>
+        <Route path="/admin/users/:id" element={<UserDetails/>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -10,17 +10,19 @@ import {
   Check,
   MapPinned,
   TriangleAlert,
+  UserRound,
+  Phone,
 } from "lucide-react";
 import clsx from "clsx";
 import { statusColorFormat } from "@/Utils/statusColorFormat";
-import { usePackageOrder, useReverseGeocode } from "@/Hooks";
+import { usePackageOrder} from "@/Hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/Hooks";
 
 
 const OrderPreview = () => {
-  const { userData } = useAuth();
+  const { userData, users } = useAuth();
   const location = useLocation();
   const order = location.state?.order;
   const { imgUrl, acceptOrder, loading, orders, markAsDelivered, markPaymentAsReceived } = usePackageOrder();
@@ -34,10 +36,7 @@ const OrderPreview = () => {
     }, 2000);
   };
 
-  const address = useReverseGeocode(
-    order?.riderLatitude,
-    order?.riderLongitude
-  );
+  const rider = users?.find((user) => user.$id === order.riderId);
 
   const activeOrders = orders?.filter((order) => order.status === "in transit")
   const isMax = activeOrders?.length === 2
@@ -225,17 +224,78 @@ const OrderPreview = () => {
                 {/* <p className="text-xs text-sub mt-1">Landmark: {order?.deliveryLandmark}</p> */}
               </div>
             </div>
-              {order?.status !== "pending" && order?.status !== "delivered" && (
-                <div className="flex items-start gap-3">
-                  <MapPin size={18} className="text-blue-500 mt-1" />
+              
+          </div>
+        </div>
+
+        {/* Contact Information */}
+        <div className="bg-background border border-line rounded-xl overflow-hidden">
+          <div className="p-4 border-b border-line">
+            <h2 className="font-semibold text-main">Contact Information</h2>
+          </div>
+
+          <div className="p-4 space-y-4">
+            <div className=" space-y-2 bg-mid p-4 rounded-xl">
+              <div className="flex items-center gap-2">
+                <UserRound size={18} className="text-primary mt-1" />
+                <div>
+                  <p className="text-sub text-sm">Customer Name</p>
+                  <p className="text-main">{order?.senderName}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Phone size={18} className="text-primary mt-1" />
                   <div>
-                    <p className="text-sub text-sm">Rider Location</p>
-                    <p className="text-main">{address}</p>
-                    {/* <p className="text-xs text-sub mt-1">Landmark: {order?.deliveryLandmark}</p> */}
+                    <p className="text-sub text-sm">Customer Phone</p>
+                    <p className="text-main">{order?.senderPhone}</p>
                   </div>
                 </div>
-              )}
+                <a href={`tel:+${order?.senderPhone}`} className=" font-sora font-medium px-4 py-1 btn bg-green-500/10 text-green-500">Call</a>
+              </div>
+            </div>
+
+            <div className=" space-y-2 bg-mid p-4 rounded-xl">
+              <div className="flex items-center gap-2">
+                <UserRound size={18} className="text-blue-500 mt-1" />
+                <div>
+                  <p className="text-sub text-sm">Receiver Name</p>
+                  <p className="text-main">{order?.receiverName}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Phone size={18} className="text-blue-500 mt-1" />
+                  <div>
+                    <p className="text-sub text-sm">Receiver Phone</p>
+                    <p className="text-main">{order?.receiverPhone}</p>
+                  </div>
+                </div>
+                <a href={`tel:+${order?.receiverPhone}`} className=" font-sora font-medium px-4 py-1 btn bg-blue-500/10 text-blue-500">Call</a>
+              </div>
+              </div>
+
+            {rider && (<div className=" space-y-2 bg-mid p-4 rounded-xl">
+              <div className="flex items-center gap-2">
+                <UserRound size={18} className="text-purple-500 mt-1" />
+                <div>
+                  <p className="text-sub text-sm">Rider Name</p>
+                  <p className="text-main">{rider?.name}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Phone size={18} className="text-purple-500 mt-1" />
+                  <div>
+                    <p className="text-sub text-sm">Rider Phone</p>
+                    <p className="text-main">{rider?.phone}</p>
+                  </div>
+                </div>
+                <a href={`tel:+${rider?.phone}`} className=" font-sora font-medium px-4 py-1 btn bg-purple-500/10 text-purple-500">Call</a>
+              </div>
+            </div>)}
           </div>
+          
         </div>
 
         {/* Time and Cost */}
