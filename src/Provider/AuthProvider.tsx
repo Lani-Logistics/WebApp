@@ -59,7 +59,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       sendEmail(
         form.email,
         "Welcome to Lani Logistics",
-        welcomeEmailTemplate(form.name, `${window.location.origin}/dashboard`),
+        welcomeEmailTemplate(form.name, `https://lani.ng/dashboard`),
         "Jackson From Lani"
       );
     } catch (error) {
