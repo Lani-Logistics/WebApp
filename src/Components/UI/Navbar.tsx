@@ -14,17 +14,17 @@ const Navbar = () => {
       icon: Home,
       to: isAdminRoute ? "/admin" : "/dashboard",
     },
-    {
-      name: isAdminRoute ? "Users" : "Wallet",
-      icon: isAdminRoute ? UserCog : Wallet,
-      to: isAdminRoute ? "/admin/users" : "/wallet",
-    },
+   
     {
       name: "Orders",
       icon: Package,
       to: isAdminRoute ? "/admin/orders" : userData?.role === "rider" ? "/orders/available" : "/orders",
     },
-   
+    {
+      name: isAdminRoute ? "Users" : "Wallet",
+      icon: isAdminRoute ? UserCog : Wallet,
+      to: isAdminRoute ? "/admin/users" : "/wallet",
+    },
   
     {
       name: "Profile",

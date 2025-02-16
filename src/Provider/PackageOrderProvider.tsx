@@ -13,6 +13,12 @@ import { generateTrackingId } from "@/Utils/helpers";
 import { toast } from "sonner";
 import { useAuth, useMaps, useNotifications } from "@/Hooks";
 import { useNavigate } from "react-router-dom";
+import { sendEmail } from "@/Email";
+import orderCreatedEmail from "@/Email/orderCreatedEmail";
+import riderAssignedEmail from "@/Email/riderAssignedEmail";
+import orderCompletedEmail from "@/Email/orderCompletedEmail";
+import riderAppreciationEmail from "@/Email/riderAppreciationEmail";
+
 
 const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
   const { getRiderLocation, isLocationEnabled, askForLocation } = useMaps();
@@ -76,6 +82,12 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
       };
       const notifyId = res?.customerId;
       await createNotifications(notification, notifyId);
+      sendEmail(
+        userData?.email,
+        "Order Created!",
+        orderCreatedEmail(res),
+        "Lani Logistics"
+      );
       navigate(`/orders/${res.trackingId}`, { state: { order: res } });
     } catch (error) {
       console.log(error);
@@ -150,6 +162,8 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
         const res = await databases.updateDocument(DB, DISPATCH, orderId, {
           riderId: userData?.$id,
           status: "in transit",
+          riderName: userData?.name,
+          riderPhone: userData?.phone,
         });
 
         await databases.updateDocument(DB, USERS, userData?.$id, {
@@ -176,6 +190,12 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
         await createNotifications(customerNotification, customerNotifyId);
         const riderNotifyId = res?.riderId;
         await createNotifications(riderNotification, riderNotifyId);
+        sendEmail(
+          res?.senderEmail,
+          "Order Accepted!",
+          riderAssignedEmail(res),
+          "Lani Logistics"
+        );
         navigate(`/orders/${res.trackingId}`, { state: { order: res } });
       }
     } catch (error) {
@@ -254,7 +274,20 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
       );
       toast.success("Order marked as delivered!");
       getUserOrders();
+
       navigate(`/orders/completed`);
+      sendEmail(
+        order?.senderEmail,
+        "Order Completed!",
+        orderCompletedEmail(order),
+        "Lani Logistics"
+      );
+      sendEmail(
+        userData?.email,
+        "Order Completed!",
+        riderAppreciationEmail(order),
+        "Lani Logistics"
+      );
     } catch (error) {
       console.error(error);
       toast.error((error as Error).message);

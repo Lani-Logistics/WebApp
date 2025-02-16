@@ -174,7 +174,7 @@ const DispatchFormProvider = ({ children }: { children: React.ReactNode }) => {
         lon: deliveryDetails.deliveryLocationLng,
       };
       const price = calculatePrice(pickup, delivery, rate);
-      if (userData?.walletBalance < price) {
+      if (userData?.wallet < price) {
         toast.error("Insufficient balance");
         return;
       }

@@ -11,6 +11,8 @@ import client, {
 } from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { sendEmail} from "@/Email";
+import { welcomeEmailTemplate } from "@/Email/welcomeEmail";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -54,6 +56,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await getUserData();
       toast.success("Account created successfully");
       navigate("/dashboard");
+      sendEmail(
+        form.email,
+        "Welcome to Lani Logistics",
+        welcomeEmailTemplate(form.name, `${window.location.origin}/dashboard`),
+        "Jackson From Lani"
+      );
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
