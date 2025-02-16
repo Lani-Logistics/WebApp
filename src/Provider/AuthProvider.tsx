@@ -58,7 +58,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       navigate("/dashboard");
       sendEmail(
         form.email,
-        "Welcome to Lani Logistics",
+        "Jackson From Lani",
         welcomeEmailTemplate(form.name, `https://lani.ng/dashboard`),
         "Jackson From Lani"
       );
