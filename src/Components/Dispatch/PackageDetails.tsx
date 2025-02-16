@@ -34,7 +34,7 @@ const PackageDetails = () => {
                     className="w-full h-full object-cover rounded-xl"
                   />
                   <div className="absolute bottom-0 -right-4 bg-primary rounded-full p-1">
-                    <Camera size={24} />
+                    <Camera size={24} className="text-white" />
                   </div>
                 </div>
               )}

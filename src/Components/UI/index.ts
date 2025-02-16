@@ -12,3 +12,4 @@ export {default as Steps} from './DispatchFormStepsIndicator'
 export {default as OrderCard} from "./OrderCard"
 export {default as RecentOrders} from "./RecentOrders"
 export {default as ScrollToTop} from "./ScrollToTop"
+export {default as TransactionList} from "./TransactionList"

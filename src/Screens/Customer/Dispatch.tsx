@@ -20,9 +20,12 @@ const Dispatch = () => {
           <div>
             <AnimatePresence>
               {currentStep === 1 && (
+                <FormAnimation>
                   <PackageDetails />
+                </FormAnimation>
               )}
             </AnimatePresence>
+
             <AnimatePresence>
               {currentStep === 2 && (
                 <FormAnimation>
@@ -30,6 +33,7 @@ const Dispatch = () => {
                 </FormAnimation>
               )}
             </AnimatePresence>
+
             <AnimatePresence>
               {currentStep === 3 && (
                 <FormAnimation>
@@ -37,9 +41,12 @@ const Dispatch = () => {
                 </FormAnimation>
               )}
             </AnimatePresence>
+
             <AnimatePresence>
               {currentStep === 4 && (
+                <FormAnimation>
                   <SummaryAndPayment />
+                </FormAnimation>
               )}
             </AnimatePresence>
           </div>

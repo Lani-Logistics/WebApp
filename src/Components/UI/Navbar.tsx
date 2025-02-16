@@ -1,27 +1,31 @@
-import { Home, Package, UserRound, Wallet } from "lucide-react";
+import { Home, Package, UserCog, UserRound, Wallet } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/Hooks";
 const Navbar = () => {
   const location = useLocation();
   const { userData } = useAuth();
 
+  const isAdminRoute = location.pathname.includes("/admin");
+  
 
   const links = [
     {
       name: "Home",
       icon: Home,
-      to: "/dashboard",
+      to: isAdminRoute ? "/admin" : "/dashboard",
+    },
+    {
+      name: isAdminRoute ? "Users" : "Wallet",
+      icon: isAdminRoute ? UserCog : Wallet,
+      to: isAdminRoute ? "/admin/users" : "/wallet",
     },
     {
       name: "Orders",
       icon: Package,
-      to: userData?.role === "rider" ? "/orders/available" : "/orders",
+      to: isAdminRoute ? "/admin/orders" : userData?.role === "rider" ? "/orders/available" : "/orders",
     },
-    {
-      name: "Wallet",
-      icon: Wallet,
-      to: "/wallet",
-    },
+   
+  
     {
       name: "Profile",
       icon: UserRound,

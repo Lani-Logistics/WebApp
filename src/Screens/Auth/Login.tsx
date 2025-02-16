@@ -2,12 +2,13 @@ import { Input } from "@/Components/UI";
 import { AuthLayout } from "@/Layouts";
 import { loginFormValidation } from "@/Utils/formValidation";
 import { Mail, Lock, UserRoundPlus, RefreshCcw, Loader } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/Hooks";
 const Login = () => {
-  const { login, loading } = useAuth();
+  const { login, loading, user } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -34,6 +35,12 @@ const Login = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
 
   return (
     <AuthLayout title="Welcome Back! 👋" subtitle="Login to your account to continue using our services.">
@@ -75,7 +82,7 @@ const Login = () => {
         <button
           disabled={loading}
           type="submit"
-          className="w-full btn bg-primary text-white px-4 py-2 rounded-full"
+          className="w-full btn bg-primary text-white px-4 h-10 rounded-full"
         >
           {loading ? <Loader className="animate-spin" size={18} /> : "Login"}
         </button>

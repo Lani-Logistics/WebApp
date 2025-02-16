@@ -16,5 +16,6 @@ export const DISPATCH = import.meta.env.VITE_APPWRITE_DISPATCH_ORDERS_COLLECTION
 export const NOTIFICATIONS = import.meta.env.VITE_APPWRITE_NOTIFICATIONS_COLLECTION_ID;
 export const STORAGE = import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID;
 export const ADMIN = import.meta.env.VITE_APPWRITE_ADMIN_COLLECTION_ID;
+export const TRANSACTIONS = import.meta.env.VITE_APPWRITE_TRANSACTIONS_COLLECTION_ID;
 
 export default client;

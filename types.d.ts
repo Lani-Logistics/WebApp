@@ -97,47 +97,92 @@ interface DispatchFormContextType {
   deliveryErrors: DeliveryDetails | undefined;
   setDeliveryErrors: (errors: DeliveryDetails) => void;
   pickupAutocomplete: google.maps.places.Autocomplete | null;
-  setPickupAutocomplete: (autocomplete: google.maps.places.Autocomplete | null) => void;
+  setPickupAutocomplete: (
+    autocomplete: google.maps.places.Autocomplete | null
+  ) => void;
   deliveryAutocomplete: google.maps.places.Autocomplete | null;
-  setDeliveryAutocomplete: (autocomplete: google.maps.places.Autocomplete | null) => void;
+  setDeliveryAutocomplete: (
+    autocomplete: google.maps.places.Autocomplete | null
+  ) => void;
   handlePlaceSelect: (type: "pickup" | "delivery") => void;
   loading: boolean;
 }
 
 interface AuthContextType {
-    user: Models.User<Models.Preferences> | null;
-    userData: Models.Document | null;
-    loading: boolean;
-    register: (form: RegisterFormTypes) => Promise<void>;
-    login: (form: LoginFormTypes) => Promise<void>;
-    logout: () => Promise<void>;
-    updatePhoneNumber: (phone: string) => Promise<void>;
-    updateLocation: (location: string) => Promise<void>;
-    users: Models.Document[];
-    rates: Models.Document;
-    isUpdatingUyo: boolean;
-    isUpdatingPh: boolean;
-    updateRatesUyo: (rate: string) => Promise<void>;
-    updateRatesPh: (rate: string) => Promise<void>;
+  user: Models.User<Models.Preferences> | null;
+  userData: Models.Document | null;
+  loading: boolean;
+  register: (form: RegisterFormTypes) => Promise<void>;
+  login: (form: LoginFormTypes) => Promise<void>;
+  logout: () => Promise<void>;
+  updatePhoneNumber: (phone: string) => Promise<void>;
+  updateLocation: (location: string) => Promise<void>;
+  users: Models.Document[];
+  rates: Models.Document;
+  isUpdatingUyo: boolean;
+  isUpdatingPh: boolean;
+  updateRatesUyo: (rate: string) => Promise<void>;
+  updateRatesPh: (rate: string) => Promise<void>;
+  transactions: Models.Document[];
+  createTransaction: (
+    amount: number,
+    status: "pending" | "success" | "failed",
+    type: "credit" | "debit",
+    category: "deposit" | "Package" | "Food",
+    description: string
+  ) => Promise<void>;
+  getTransactions: () => Promise<void>;
 }
 
 interface PackageOrderContextType {
-    orders: Models.Document[]
-    createOrder: (packageDetails: PackageDetails, deliveryDetails: DeliveryDetails, pickupDetails: PickupDetails, price: number, isPaid: boolean) => Promise<void>
-    loading: boolean
-    allOrders: Models.Document[]
-    acceptOrder: (orderId: string) => Promise<void>
-    markAsDelivered: (orderId: string) => Promise<void>
-    markPaymentAsReceived: (orderId: string) => Promise<void>
-    parcels: Models.Document[]
+  orders: Models.Document[];
+  createOrder: (
+    packageDetails: PackageDetails,
+    deliveryDetails: DeliveryDetails,
+    pickupDetails: PickupDetails,
+    price: number,
+    isPaid: boolean
+  ) => Promise<void>;
+  loading: boolean;
+  allOrders: Models.Document[];
+  acceptOrder: (orderId: string) => Promise<void>;
+  markAsDelivered: (order: Models.Document) => Promise<Models.Document>;
+  markPaymentAsReceived: (order: Models.Document) => Promise<Models.Document>;
+  parcels: Models.Document[];
 }
 
 interface MapsContextType {
-    isLocationEnabled: boolean
-    getRiderLocation: () => Promise<{latitude: number, longitude: number}>
-    askForLocation: () => Promise<void>
-    reverseGeocode: (latitude: number, longitude: number) => Promise<null | undefined>
-    isFetchingLocation: boolean
-    riderLocation: {address: string, city: string, country: string} | null
+  isLocationEnabled: boolean;
+  getRiderLocation: () => Promise<{ latitude: number; longitude: number }>;
+  askForLocation: () => Promise<void>;
+  reverseGeocode: (
+    latitude: number,
+    longitude: number
+  ) => Promise<null | undefined>;
+  isFetchingLocation: boolean;
+  riderLocation: { address: string; city: string; country: string } | null;
 }
 
+interface NotificationContextType {
+    createNotifications: (
+      notification: Notifications,
+      id: string
+    ) => Promise<void>;
+    markAllAsRead: () => Promise<void>;
+    notifications: Models.Document[] | null;
+    unreadCount: number;
+    isLoading: boolean;
+    markAsRead?: (notificationId: string) => Promise<void>;
+  }
+
+  interface Notifications {
+    notificationId?: string;
+    type: string;
+    title: string;
+    content: string;
+    activity?: string;
+    path?: string;
+    isRead?: boolean;
+  }
+
+type NotificationType = 'order' | 'system' | 'success' | 'alert' | 'food';

@@ -11,7 +11,7 @@ const OrderCard = ({order}: {order: Models.Document}) => {
     }
   return (
     <div className="flex relative border border-line hover:border-primary transition-all duration-300 gap-4 w-full bg-background p-4 rounded-xl" onClick={handlePreview}>
-        <div className="h-14 w-14 rounded-md bg-primary/10 center overflow-hidden">
+        <div className="h-14 w-14 rounded-md bg-mid center overflow-hidden">
             <img src={imgUrl(order.packageImage)} alt={order.packageName} />
         </div>
         <div className="flex-1">

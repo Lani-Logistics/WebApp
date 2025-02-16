@@ -170,7 +170,7 @@ const UserDetails = () => {
                 <div 
                   key={order.$id}
                   className="p-4 hover:bg-background_2 cursor-pointer"
-                  onClick={() => navigate(`/admin/orders/${order.trackingId}`)}
+                  onClick={() => navigate(`/orders/${order.trackingId}`)}
                 >
                   <div className="flex items-center justify-between">
                     <div>

@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { AuthContext } from "@/Context";
-import { ID, Models } from "appwrite";
-import client, { account, databases, DB, USERS, ADMIN } from "@/Backend/appwrite";
+import { ID, Models, Query } from "appwrite";
+import client, {
+  account,
+  databases,
+  DB,
+  USERS,
+  ADMIN,
+  TRANSACTIONS,
+} from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -15,6 +22,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [rates, setRates] = useState<Models.Document>();
   const [isUpdatingUyo, setIsUpdatingUyo] = useState(false);
   const [isUpdatingPh, setIsUpdatingPh] = useState(false);
+  const [transactions, setTransactions] = useState<Models.Document[]>([]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -94,7 +102,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session);
       console.log(session);
       await getUserData();
-      navigate("/dashboard");
+      if (userData) {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
@@ -141,7 +151,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     checkAuth();
 
     return () => {
-      isMounted = false; 
+      isMounted = false;
     };
   }, [navigate, getUserData]);
 
@@ -182,7 +192,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
-    } 
+    }
   }, []);
 
   const updateRatesUyo = async (rate: string) => {
@@ -217,9 +227,74 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getAdminSettings();
   }, [getAdminSettings]);
 
+  // transaction
+  const createTransaction = async (
+    amount: number,
+    status: "pending" | "success" | "failed",
+    type: "credit" | "debit",
+    category: "deposit" | "Package" | "Food",
+    description: string
+  ) => {
+    try {
+      if (!userData?.$id) throw new Error("User not found");
+      const res = await databases.createDocument(
+        DB,
+        TRANSACTIONS,
+        ID.unique(),
+        {
+          transactionId: userData?.$id,
+          amount: amount,
+          status: status,
+          type: type,
+          category: category,
+          description: description,
+        }
+      );
+
+      if (type === "credit") {
+        await databases.updateDocument(DB, USERS, userData?.$id, {
+          wallet: Number(userData?.wallet) + amount,
+        });
+        toast.success("Balance updated successfully");
+      }
+      if (type === "debit") {
+        await databases.updateDocument(DB, USERS, userData?.$id, {
+          wallet: Number(userData?.wallet) - amount,
+        });
+        toast.success("Balance updated successfully");
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    }
+  };
+
+  const getTransactions = useCallback(async () => {
+    try {
+      if (!userData?.$id) throw new Error("User not found");
+      const res = await databases.listDocuments(DB, TRANSACTIONS, [
+        Query.equal("transactionId", userData?.$id),
+        Query.orderDesc("$createdAt"),
+      ]);
+      setTransactions(res.documents);
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    getTransactions();
+  }, [getTransactions]);
+
   useEffect(() => {
     const unsubscribe = client.subscribe(
-      [`databases.${DB}.collections.${USERS}.documents`],
+      [
+        `databases.${DB}.collections.${USERS}.documents`,
+        `databases.${DB}.collections.${ADMIN}.documents`,
+        `databases.${DB}.collections.${TRANSACTIONS}.documents`,
+      ],
       (response) => {
         if (
           response.events.some(
@@ -228,6 +303,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         ) {
           getUserData();
           getAdminSettings();
+          getTransactions();
         }
       }
     );
@@ -235,9 +311,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       unsubscribe();
     };
-  }, [getUserData, getAdminSettings]);
-
-
+  }, [getUserData, getAdminSettings, getTransactions]);
 
   const value: AuthContextType = {
     user,
@@ -254,6 +328,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isUpdatingPh,
     updateRatesUyo,
     updateRatesPh,
+    transactions,
+    createTransaction,
+    getTransactions,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

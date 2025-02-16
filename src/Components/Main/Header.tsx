@@ -2,12 +2,13 @@ import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "../UI";
 import { Goback } from "../UI";
 import { Bell, MapPinHouse } from "lucide-react";
-import { useAuth } from "@/Hooks";
+import { useAuth, useNotifications } from "@/Hooks";
 const Header = () => {
   const { userData } = useAuth();
+  const {unreadCount} = useNotifications()
     const location = useLocation();
     const isDashboard = location.pathname === "/dashboard";
-    const unreadCount = 2;
+    
   return (
     <>
       <header className="sticky top-0 z-50 backdrop-blur-sm">

@@ -7,8 +7,6 @@ import { Loader } from "lucide-react";
 
 const Flatrates = () => {
   const { rates, isUpdatingUyo, isUpdatingPh, updateRatesUyo, updateRatesPh } = useAdmin();
-  console.log(rates?.rateForUyo);
-
   const [flatUyoRate, setFlatUyoRate] = useState(rates?.rateForUyo);
   const [flatPortHarcourtRate, setFlatPortHarcourtRate] = useState(
     rates?.rateForPh

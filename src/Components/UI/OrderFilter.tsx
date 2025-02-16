@@ -52,7 +52,7 @@ const OrderFilter = ({
             </h1>
             <div className="flex items-center justify-center gap-2 flex-wrap">
               {types.map((item, index) => (
-                <button key={index} onClick={()=>handleOrderType(item)} className={`flex-1 text-sm px-4 py-2 rounded-full font-sora font-medium capitalize ${orderType === item ? "bg-primary text-white" : "bg-background"}`}>
+                <button key={index} onClick={()=>handleOrderType(item)} className={`flex-1 text-sm px-4 py-2 rounded-lg font-sora font-medium capitalize ${orderType === item ? "bg-primary text-white" : "bg-background"}`}>
                   {item}
                 </button>
               ))}

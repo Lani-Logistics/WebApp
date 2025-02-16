@@ -5,10 +5,11 @@ import { states } from "@/Constants/data";
 import { CheckCircle, Circle, Loader, MapPinned } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
-import { useAuth } from "@/Hooks";
+import { useAuth, useNotifications } from "@/Hooks";
 
 const Location = () => {
-  const { register, loading } = useAuth();
+  const { register, loading, user } = useAuth();
+  const {createNotifications} = useNotifications()
   const location = useLocation();
   const {form: data} = location.state as {form: RegisterFormTypes};
   const [search, setSearch] = useState("");
@@ -29,6 +30,17 @@ const Location = () => {
       return;
     }
     register(form);
+    if(user?.$id){
+    createNotifications(
+      {title: "Welcome to Lani Logistics",
+        type: "system",
+        content: "Thank you for registering with us",
+        path: "dashboard",
+        isRead: false,
+      },
+      user?.$id
+    );
+    }
   }
   return (
     <>

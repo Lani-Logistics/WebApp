@@ -11,11 +11,12 @@ import { ID, Models, Query } from "appwrite";
 import { useCallback, useEffect, useState } from "react";
 import { generateTrackingId } from "@/Utils/helpers";
 import { toast } from "sonner";
-import { useAuth, useMaps } from "@/Hooks";
+import { useAuth, useMaps, useNotifications } from "@/Hooks";
 import { useNavigate } from "react-router-dom";
 
 const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
   const { getRiderLocation, isLocationEnabled, askForLocation } = useMaps();
+  const { createNotifications } = useNotifications();
   const { userData } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -67,6 +68,14 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
         senderEmail: userData?.email,
         isPaid: isPaid,
       });
+      const notification = {
+        title: "Order Created!",
+        type: "order",
+        content: `Your order has been placed successfully, and your tracking Id is ${res?.trackingId}. \n A rider will be assigned shortly!`,
+        path: res?.trackingId,
+      };
+      const notifyId = res?.customerId;
+      await createNotifications(notification, notifyId);
       navigate(`/orders/${res.trackingId}`, { state: { order: res } });
     } catch (error) {
       console.log(error);
@@ -149,6 +158,24 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         toast.success("Order accepted successfully!");
+        const customerNotification = {
+          title: "Order Accepted!",
+          type: "order",
+          content: `A rider, ${res?.riderName} has been assigned to your order, ${res?.trackingId}!`,
+          path: res?.trackingId,
+          activity: `A rider, ${res?.riderName} has been assigned to your order, ${res?.trackingId}!`,
+        };
+        const riderNotification = {
+          title: "Order Accepted!",
+          type: "order",
+          content: `You accepted an order by ${res?.senderName}, with a trackingId of ${res?.trackingId}!`,
+          path: res?.trackingId,
+          activity: `You accepted an order by ${res?.senderName}, with a trackingId of ${res?.trackingId}!`,
+        };
+        const customerNotifyId = res?.customerId;
+        await createNotifications(customerNotification, customerNotifyId);
+        const riderNotifyId = res?.riderId;
+        await createNotifications(riderNotification, riderNotifyId);
         navigate(`/orders/${res.trackingId}`, { state: { order: res } });
       }
     } catch (error) {
@@ -195,16 +222,36 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [updateRiderLocation, isLocationEnabled]);
 
-  const markAsDelivered = async (orderId: string) => {
+  const markAsDelivered = async (order: Models.Document) => {
     setLoading(true);
     try {
-      await databases.updateDocument(DB, DISPATCH, orderId, {
+      await databases.updateDocument(DB, DISPATCH, order.$id, {
         status: "delivered",
       });
       await databases.updateDocument(DB, USERS, userData?.$id, {
         riderLatitude: "0",
         riderLongitude: "0",
       });
+      await createNotifications(
+        {
+          title: "Order Completed!",
+          type: "success",
+          content: `Your order has been delivered successfully, ${order?.trackingId}!`,
+          path: order?.trackingId,
+        },
+        order?.customerId
+      );
+
+      // rider notification
+      await createNotifications(
+        {
+          title: "Order Completed!",
+          type: "success",
+          content: `You have completed an order by ${order?.senderName}, with a trackingId of ${order?.trackingId}!`,
+          path: order?.trackingId,
+        },
+        order?.riderId
+      );
       toast.success("Order marked as delivered!");
       getUserOrders();
       navigate(`/orders/completed`);
@@ -216,14 +263,15 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const markPaymentAsReceived = async (orderId: string) => {
+  const markPaymentAsReceived = async (order: Models.Document) => {
     setLoading(true);
     try {
-      await databases.updateDocument(DB, DISPATCH, orderId, {
+      const res = await databases.updateDocument(DB, DISPATCH, order.$id, {
         isPaid: true,
       });
       toast.success("Payment marked as received!");
       getUserOrders();
+      return res;
     } catch (error) {
       console.error(error);
       toast.error((error as Error).message);
@@ -236,18 +284,15 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = client.subscribe(
       [`databases.${DB}.collections.${DISPATCH}.documents`],
       (response) => {
-        const event = response.events[0];
-        if (event.includes("create")) {
+        if (response.events.some((event) => event.includes("create"))) {
           getAllOrders();
           getUserOrders();
-        } else if (event.includes("update")) {
-          getAllOrders();
-          getUserOrders();
+          getParcels();
         }
       }
     );
     return () => unsubscribe();
-  }, [getAllOrders, getUserOrders]);
+  }, [getAllOrders, getUserOrders, getParcels]);
 
   const value: PackageOrderContextType = {
     orders,

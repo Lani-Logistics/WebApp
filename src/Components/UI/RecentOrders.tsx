@@ -14,8 +14,8 @@ const RecentOrders = () => {
     userData?.role === "rider" ? activeOrders : recentOrders;
 
   const title = userData?.role === "rider" ? "Active Orders" : "Recent Orders";
-  const subtitle = userData?.role === "rider" ? "" : "Recent Orders";
-  const link = userData?.role === "rider" ? "" : "/orders";
+  const subtitle = userData?.role === "rider" ? "View all" : "View all";
+  const link = userData?.role === "rider" ? "/orders/available" : "/orders";
   return (
     <>
       <Subtitle title={title} subtitle={subtitle} link={link} />

@@ -2,11 +2,14 @@ import { DispatchFormContext } from "@/Context/DispatchFormContext";
 import { useState } from "react";
 import { dispatchFormValidation } from "@/Utils/formValidation";
 import { toast } from "sonner";
-import { usePackageOrder, useAuth, useAdmin } from "@/Hooks";
+import { usePackageOrder, useAuth, useAdmin, useTransactions } from "@/Hooks";
 import { calculatePrice } from "@/Utils/helpers";
 import { databases, DB, USERS } from "@/Backend/appwrite";
+
+
 const DispatchFormProvider = ({ children }: { children: React.ReactNode }) => {
   const { createOrder, loading } = usePackageOrder();
+  const { createTransaction } = useTransactions();
   const { userData, user } = useAuth();
   const { rates } = useAdmin();
   // States
@@ -224,9 +227,12 @@ toast.error("Payment failed!")
       const res = await databases.updateDocument(DB, USERS, user.$id, {
         wallet: userData?.wallet - price,
       });
+      await createTransaction(price, "success", "debit", "Package", "Payment for package dispatch");
+
       console.log(res);
     } catch (error) {
       console.log(error);
+      await createTransaction(price, "failed", "debit", "Package", "Payment for package dispatch");
     }
   };
 
