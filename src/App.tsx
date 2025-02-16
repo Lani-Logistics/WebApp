@@ -43,6 +43,7 @@ const App = () => {
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/location" element={<Location />} />
 
+        {/* Protected Routes */}
         <Route element={<ProtectedRoutes />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
