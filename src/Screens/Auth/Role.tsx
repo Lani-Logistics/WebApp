@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Role = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState<string>("");
+  const [role, setRole] = useState("");
   const handleRole = (role: string) => {
     setRole(role);
   };
@@ -20,7 +20,7 @@ const Role = () => {
     }
     setLoading(true);
     setTimeout(() => {
-      navigate("/register", { state: { role } });
+      navigate("/register", { state: role });
       setLoading(false);
     }, 1000);
   };
@@ -71,6 +71,25 @@ const Role = () => {
                   <Circle size={20} className="text-sub"  />
                 )}
                 Rider
+              </div>
+            </label>
+            <label htmlFor="restaurant" className="text-main font-sora text-sm font-medium">
+              <input
+                type="radio"
+                name="role"
+                id="restaurant"
+                value="restaurant"
+                checked={role === "restaurant"}
+                className="hidden"
+                onChange={(e) => handleRole(e.target.value)}
+              />
+              <div className={`flex items-center gap-2 bg-background border border-line rounded-xl p-4 ${role === "restaurant" ? "border-primary" : ""}`}>
+                {role === "restaurant" ? (
+                  <CircleCheck size={20} className="text-primary" />
+                ) : (
+                  <Circle size={20} className="text-sub"  />
+                )}
+                Restaurant
               </div>
             </label>
           </div>

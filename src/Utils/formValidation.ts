@@ -117,3 +117,38 @@ export const dispatchFormValidation = (
 
   return true;
 };
+
+export const restaurantRegistrationFormValidation = (
+  form: RestaurantRegistrationFormTypes,
+  setErrors: (errors: RestaurantRegistrationFormTypes) => void,
+  errors: RestaurantRegistrationFormTypes
+) => {
+  if (!form.restaurantName) {
+    setErrors({ ...errors, restaurantName: "Restaurant name is required" });
+    return false;
+  }
+  if (!form.email) {
+    setErrors({ ...errors, email: "Email is required" });
+    return false;
+  }
+  if (!form.phone) {
+    setErrors({ ...errors, phone: "Phone number is required" });
+    return false;
+  }
+  if (!form.address) {
+    setErrors({ ...errors, address: "Address is required" });
+    return false;
+  }
+  if (!form.password) {
+    setErrors({ ...errors, password: "Password is required" });
+    return false;
+  }
+  if (form.password.length < 8) {
+    setErrors({
+      ...errors,
+      password: "Password must be at least 8 characters",
+    });
+    return false;
+  }
+  return true;
+}

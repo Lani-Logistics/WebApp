@@ -20,9 +20,22 @@ interface RegisterFormTypes {
   name: string;
   email: string;
   phone: string;
+  company?: string;
   password: string;
   role: string;
   city?: string;
+}
+
+interface RestaurantRegistrationFormTypes {
+  restaurantName: string;
+  email: string;
+  phone: string;
+  address: string;
+  lat:number;
+  lon:number;
+  password: string;
+  role?: string;
+  city?:string
 }
 
 interface LoginFormTypes {
@@ -132,6 +145,7 @@ interface AuthContextType {
     description: string
   ) => Promise<void>;
   getTransactions: () => Promise<void>;
+  registerRestaurant: (form: RestaurantRegistrationFormTypes) => Promise<void>;
 }
 
 interface PackageOrderContextType {

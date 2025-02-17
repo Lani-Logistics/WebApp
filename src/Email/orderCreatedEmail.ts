@@ -3,7 +3,7 @@ import { formatDate } from "@/Utils/formatDate";
 
 const orderCreatedEmail = (order: Models.Document) => {
     const createdAt = formatDate(order.$createdAt);
-    return `
+  return `
     <!DOCTYPE html>
     <html lang="en">
     <head>

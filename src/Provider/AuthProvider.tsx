@@ -8,6 +8,7 @@ import client, {
   USERS,
   ADMIN,
   TRANSACTIONS,
+  RESTAURANTS,
 } from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -86,6 +87,50 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const registerRestaurant = async (form: RestaurantRegistrationFormTypes) => {
+    setLoading(true);
+    try {
+      const res = await account.create(
+        ID.unique(),
+        form.email,
+        form.password,
+        form.restaurantName
+      );
+      await account.createEmailPasswordSession(form.email, form.password);
+      const session = await account.get();
+      setUser(session);
+      await createRestaurantUserdata(form, res.$id);
+      console.log(session);
+      await getRestaurantUserData();
+      toast.success("Account created successfully");
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  const createRestaurantUserdata = async (form: RestaurantRegistrationFormTypes, id: string) => {
+    try {
+      await databases.createDocument(DB, RESTAURANTS, id, {
+        restaurantId: id,
+        name: form.restaurantName,
+        email: form.email,
+        phone: form.phone,
+        address: form.address,
+        lat: form.lat,
+        lon: form.lon,
+        location: form.city,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    }
+  }
+
   const getUserData = useCallback(async () => {
     const user = await account.get();
     if (!user?.$id) throw new Error("User not found");
@@ -98,9 +143,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const getRestaurantUserData = useCallback(async () => {
+    const user = await account.get();
+    if (!user?.$id) throw new Error("User not found");
+    try {
+      const res = await databases.getDocument(DB, RESTAURANTS, user.$id);
+      setUserData(res);
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    }
+  }, []);
+
   useEffect(() => {
     getUserData();
-  }, [getUserData]);
+    getRestaurantUserData();
+  }, [getUserData, getRestaurantUserData]);
 
   const login = async (form: LoginFormTypes) => {
     setLoading(true);
@@ -339,6 +397,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     transactions,
     createTransaction,
     getTransactions,
+    registerRestaurant,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
