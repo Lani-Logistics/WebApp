@@ -152,10 +152,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await databases.getDocument(DB, RESTAURANTS, user.$id);
       setUserData(res);
-      // toast.success("Restaurant user data fetched successfully");
     } catch (error) {
       console.log(error);
-      throw new Error((error as Error).message);
+      // throw new Error((error as Error).message);
     }
   }, []);
 

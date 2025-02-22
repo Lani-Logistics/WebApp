@@ -11,7 +11,7 @@ import clsx from "clsx";
 
 const Tracking = () => {
   const { user } = useAuth();
-  const { allOrders, imgUrl } = usePackageOrder();
+  const { parcels, imgUrl } = usePackageOrder();
   const [id, setId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -25,7 +25,7 @@ const Tracking = () => {
 
   const trackOrder = () => {
     if (!id) return setError("Please enter a valid tracking ID");
-    const order = allOrders.find((order) => order.trackingId === id);
+    const order = parcels.find((order) => order.trackingId === id);
     console.log(order);
     if (!order) {
       setError("Invalid Tracking ID!");
