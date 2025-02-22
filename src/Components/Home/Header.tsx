@@ -24,7 +24,7 @@ const Header = () => {
             <ul className="flex items-center gap-4">
               {headerLinks.map((link) => (
                 <li key={link.title}>
-                  <a href={`#${link.path}`} className="text-sub font-light">{link.title}</a>
+                  <a href={`#${link.path}`} className="text-sub font-light hover:bg-background hover:text-main transition-all duration-300 px-3 py-2 rounded-md">{link.title}</a>
                 </li>
               ))}
             </ul>
