@@ -16,13 +16,14 @@ import {
   NotFound,
   Wallet,
 } from "@/Screens/Main";
-import { CustomerOrders, Dispatch } from "@/Screens/Customer";
+import { CustomerOrders, Dispatch, Food } from "@/Screens/Customer";
 import { AvailableOrders, CompletedOrders } from "@/Screens/Rider";
 import {
   Overview,
   Users,
   UserDetails,
   OrdersManagement,
+  Restaurants,
 } from "@/Screens/Admin";
 import { ScrollToTop } from "@/Components/UI";
 import { Toaster } from "sonner";
@@ -69,12 +70,14 @@ const App = () => {
           <Route path="/orders/available" element={<AvailableOrders />} />
           <Route path="/orders/completed" element={<CompletedOrders />} />
           <Route path="/wallet" element={<Wallet />} />
+          <Route path="/food" element={<Food />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<Overview />} />
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/users/:id" element={<UserDetails />} />
           <Route path="/admin/orders" element={<OrdersManagement />} />
+          <Route path="/admin/restaurants" element={<Restaurants />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

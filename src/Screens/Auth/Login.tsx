@@ -40,7 +40,7 @@ const Login = () => {
     if (user) {
       navigate("/dashboard");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   return (
     <AuthLayout title="Welcome Back! 👋" subtitle="Login to your account to continue using our services.">

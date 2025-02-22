@@ -34,7 +34,7 @@ const DispatchType = () => {
 
     return (
         <MainLayout title="Dispatch Type">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
                 {dispatchTypes.map((type) => (
                     <div onClick={type.isAvailable? handleSameState : handleInterstate}  key={type.title} className={clsx("flex flex-col gap-2 p-4 border border-line rounded-lg cursor-pointer space-y-4 transition-colors", type.isAvailable ? "opacity-100" : "opacity-50")}>
                         <div className="center h-10 w-10 rounded-md bg-primary/10"><type.icon size={20}  className="text-primary"/></div>

@@ -1,4 +1,4 @@
-import { Home, Package, UserCog, UserRound, Wallet } from "lucide-react";
+import { CookingPot, LayoutDashboard, Package, UsersRound, Wallet, CircleUserRound } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/Hooks";
 const Navbar = () => {
@@ -6,32 +6,62 @@ const Navbar = () => {
   const { userData } = useAuth();
 
   const isAdminRoute = location.pathname.includes("/admin");
-  
+  const isRider = userData?.role === "rider";
 
-  const links = [
+  const userLinks = [
     {
       name: "Home",
-      icon: Home,
-      to: isAdminRoute ? "/admin" : "/dashboard",
+      icon: LayoutDashboard,
+      to: "/dashboard",
     },
    
     {
       name: "Orders",
       icon: Package,
-      to: isAdminRoute ? "/admin/orders" : userData?.role === "rider" ? "/orders/available" : "/orders",
+      to: isRider ? "/orders/available" : "/orders",
     },
     {
-      name: isAdminRoute ? "Users" : "Wallet",
-      icon: isAdminRoute ? UserCog : Wallet,
-      to: isAdminRoute ? "/admin/users" : "/wallet",
+      name: "Wallet",
+      icon: Wallet,
+      to: "/wallet",
     },
   
     {
       name: "Profile",
-      icon: UserRound,
+      icon: CircleUserRound,
       to: "/profile",
     },
   ];
+
+  const adminLinks = [
+    {
+      name: "Home",
+      icon: LayoutDashboard,
+      to: "/admin",
+    },
+    {
+      name: "Restaurants",
+      icon: CookingPot,
+      to: "/admin/restaurants",
+    },
+    {
+      name: "Orders",
+      icon: Package,
+      to: "/admin/orders",
+    },
+    {
+      name: "Users",
+      icon: UsersRound,
+      to: "/admin/users",
+    },
+    {
+      name: "Profile",
+      icon: CircleUserRound,
+      to: "/profile",
+    },
+  ];
+
+  const links = isAdminRoute ? adminLinks : userLinks;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-6 px-4">

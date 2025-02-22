@@ -13,7 +13,7 @@ import { Flatrates } from "@/Components/Admin";
 
 const Overview = () => {
   const { parcels } = usePackageOrder();
-  const { users } = useAuth();
+  const { users, restaurants } = useAuth();
   
 
   const foodOrders = [];
@@ -46,6 +46,14 @@ const Overview = () => {
       title: "Total Orders",
       count: parcelOrders.length + foodOrders.length,
     },
+    {
+      to: "/admin/restaurants",
+      icon: <Utensils size={20} />,
+      bgColor: "bg-blue-500/10",
+      textColor: "text-blue-500",
+      title: "Total Restaurants",
+      count: restaurants.length,
+    }
   ];
 
   return (

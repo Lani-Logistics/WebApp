@@ -149,6 +149,8 @@ interface AuthContextType {
   updateCompanyName: (name: string) => Promise<void>;
   updateCompanyAddress: (address: string) => Promise<void>;
   updateCompanyEmail: (email: string) => Promise<void>;
+  restaurants: Models.Document[];
+  updateRestaurant: (restaurant: Models.Document) => Promise<void>;
 }
 
 interface PackageOrderContextType {

@@ -26,6 +26,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isUpdatingUyo, setIsUpdatingUyo] = useState(false);
   const [isUpdatingPh, setIsUpdatingPh] = useState(false);
   const [transactions, setTransactions] = useState<Models.Document[]>([]);
+  const [restaurants, setRestaurants] = useState<Models.Document[]>([]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -158,10 +159,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const getRestaurants = useCallback(async () => {
+    try {
+      const res = await databases.listDocuments(DB, RESTAURANTS);
+      setRestaurants(res.documents);
+    } catch (error) {
+      console.log(error); 
+      throw new Error((error as Error).message);
+    }
+  }, []);
+
   useEffect(() => {
     getUserData();
     getRestaurantUserData();
-  }, [getUserData, getRestaurantUserData]);
+    getRestaurants();
+  }, [getUserData, getRestaurantUserData, getRestaurants]);
 
   const login = async (form: LoginFormTypes) => {
     setLoading(true);
@@ -202,6 +214,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let isMounted = true;
 
     const checkAuth = async () => {
+      setLoading(true);
       try {
         const session = await account.get();
         if (!session) {
@@ -219,6 +232,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -408,6 +423,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+
+  const updateRestaurant = async (restaurant: Models.Document) => {
+    setLoading(true);
+    try {
+      await databases.updateDocument(DB, RESTAURANTS, restaurant.$id, {
+        isVerified: true,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = client.subscribe(
       [
@@ -455,6 +485,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     updateCompanyName,
     updateCompanyAddress,
     updateCompanyEmail,
+    restaurants,
+    updateRestaurant,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
