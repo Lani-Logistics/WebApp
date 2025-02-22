@@ -77,7 +77,7 @@ const Contacts = () => {
                   className=" px-4 py-2 rounded-xl text-sm placeholder:text-sm placeholder:font-dm text-main w-full placeholder:text-sub border border-line focus-within:ring-[3px] ring-offset-0 focus-within:ring-orange-500/50 focus-within:border-primary_1 bg-background"
                 ></textarea>
               </div>
-              <button type="submit" className="btn bg-primary h-10 rounded-full">
+              <button type="submit" className="btn bg-primary text-white h-10 rounded-full">
                 <span>Send Message</span>
                 <Send size={18} />
               </button>
