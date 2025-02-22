@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Onboarding, SplashSceen } from "@/Screens/Home";
+import { Onboarding, SplashSceen, Home, Tracking } from "@/Screens/Home";
 import {
   Role,
   Register,
@@ -27,14 +27,28 @@ import {
 import { ScrollToTop } from "@/Components/UI";
 import { Toaster } from "sonner";
 import { ProtectedRoutes } from "./Components/Main";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
+import { DispatchType } from "./Components/Dispatch";
 
 const App = () => {
+  useEffect(() => {
+    AOS.init({
+      offset: 50,
+      duration: 1000,
+      easing: "ease-in-sine",
+      delay: 100,
+    });
+  }, []);
   return (
     <>
       <ScrollToTop />
       <Toaster position="top-center" richColors className="font-sora" />
       <Routes>
-        <Route path="/" element={<SplashSceen />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/track" element={<Tracking />} />
+        <Route path="/app" element={<SplashSceen />} />
         <Route path="/home" element={<Onboarding />} />
         <Route path="/role" element={<Role />} />
         <Route path="/register" element={<Register />} />
@@ -49,7 +63,8 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<CustomerOrders />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/dispatch" element={<Dispatch />} />
+          <Route path="/dispatch/type" element={<DispatchType />} />
+          <Route path="/dispatch/same-city" element={<Dispatch />} />
           <Route path="/orders/:id" element={<OrderPreview />} />
           <Route path="/orders/available" element={<AvailableOrders />} />
           <Route path="/orders/completed" element={<CompletedOrders />} />

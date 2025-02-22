@@ -12,7 +12,7 @@ import client, {
 } from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { sendEmail} from "@/Email";
+import { sendEmail } from "@/Email";
 import { welcomeEmailTemplate } from "@/Email/welcomeEmail";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
@@ -80,6 +80,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phone: form.phone,
         role: form.role,
         location: form.city,
+        companyName: form.company,
       });
     } catch (error) {
       console.log(error);
@@ -110,10 +111,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-
-  const createRestaurantUserdata = async (form: RestaurantRegistrationFormTypes, id: string) => {
+  const createRestaurantUserdata = async (
+    form: RestaurantRegistrationFormTypes,
+    id: string
+  ) => {
     try {
       await databases.createDocument(DB, RESTAURANTS, id, {
         restaurantId: id,
@@ -129,7 +132,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(error);
       throw new Error((error as Error).message);
     }
-  }
+  };
 
   const getUserData = useCallback(async () => {
     const user = await account.get();
@@ -139,7 +142,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUserData(res);
     } catch (error) {
       console.log(error);
-      throw new Error((error as Error).message);
+      // throw new Error((error as Error).message);
     }
   }, []);
 
@@ -149,6 +152,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await databases.getDocument(DB, RESTAURANTS, user.$id);
       setUserData(res);
+      // toast.success("Restaurant user data fetched successfully");
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
@@ -167,6 +171,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const session = await account.get();
       setUser(session);
       console.log(session);
+      await getRestaurantUserData();
       await getUserData();
       if (userData) {
         navigate("/dashboard");
@@ -207,7 +212,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         if (isMounted) {
           setUser(session);
-          await getUserData();
+          if (userData?.role === "restaurant") {
+            await getRestaurantUserData();
+          } else {
+            await getUserData();
+          }
         }
       } catch (error) {
         console.error(error);
@@ -219,7 +228,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigate, getUserData]);
+  }, [navigate, getUserData, userData?.role, getRestaurantUserData]);
 
   const updatePhoneNumber = async (phone: string) => {
     setLoading(true);
@@ -354,6 +363,52 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getTransactions();
   }, [getTransactions]);
 
+  const updateCompanyName = async (name: string) => {
+    setLoading(true);
+    if (!userData?.$id) throw new Error("User not found");
+    try {
+      await databases.updateDocument(DB, USERS, userData?.$id, {
+        companyName: name,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateCompanyAddress = async (address: string) => {
+    setLoading(true);
+    if (!userData?.$id) throw new Error("User not found");
+    try {
+      await databases.updateDocument(DB, USERS, userData?.$id, {
+        companyAddress: address,
+     
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateCompanyEmail = async (email: string) => {
+    setLoading(true);
+    if (!userData?.$id) throw new Error("User not found");
+    try {
+      await databases.updateDocument(DB, USERS, userData?.$id, {
+        companyEmail: email,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = client.subscribe(
       [
@@ -398,6 +453,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     createTransaction,
     getTransactions,
     registerRestaurant,
+    updateCompanyName,
+    updateCompanyAddress,
+    updateCompanyEmail,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

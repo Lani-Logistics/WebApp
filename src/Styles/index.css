@@ -40,7 +40,7 @@
 }
 
 *{
-  @apply outline-none;
+  @apply outline-none scroll-smooth;
 }
 
 body {

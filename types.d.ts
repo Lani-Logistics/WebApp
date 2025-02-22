@@ -146,6 +146,9 @@ interface AuthContextType {
   ) => Promise<void>;
   getTransactions: () => Promise<void>;
   registerRestaurant: (form: RestaurantRegistrationFormTypes) => Promise<void>;
+  updateCompanyName: (name: string) => Promise<void>;
+  updateCompanyAddress: (address: string) => Promise<void>;
+  updateCompanyEmail: (email: string) => Promise<void>;
 }
 
 interface PackageOrderContextType {

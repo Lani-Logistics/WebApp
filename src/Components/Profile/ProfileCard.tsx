@@ -9,7 +9,7 @@ const ProfileCard = () => {
     const isAdmin = userData?.isAdmin;
   return (
     <div className="bg-background border border-line rounded-xl p-6">
-            <div className="flex items-center gap-4">
+            <div className="flex gap-4">
               <div className="w-16 h-16 rounded-full bg-background_2 overflow-hidden">
                 <img
                   src={`https://ui-avatars.com/api/?name=${name}&background=random`}
