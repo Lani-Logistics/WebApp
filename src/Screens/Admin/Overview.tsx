@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 
 import MainLayout from "@/Layouts/MainLayout";
-import { Flatrates } from "@/Components/Admin";
+import { Settings } from "@/Components/Admin";
+import clsx from "clsx";
 
 const Overview = () => {
   const { parcels } = usePackageOrder();
@@ -110,11 +111,11 @@ const Overview = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          {overview.map((item) => (
+          {overview.map((item, index) => (
             <Link
               key={item.title}
               to={item.to}
-              className="bg-background border border-line hover:border-primary transition-all duration-300 p-4 rounded-xl space-y-4 cursor-pointer"
+              className={clsx("bg-background border border-line hover:border-primary transition-all duration-300 p-4 rounded-xl space-y-4 cursor-pointer", index === 2 && "md:col-span-2 col-span-1")}
             >
               <div className="flex items-center justify-between">
                 <div
@@ -135,7 +136,7 @@ const Overview = () => {
           
         </div>
 
-        <Flatrates />
+<Settings/>
       </MainLayout>
     </>
   );

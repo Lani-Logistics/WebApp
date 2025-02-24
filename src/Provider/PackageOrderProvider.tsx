@@ -30,6 +30,8 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [parcels, setParcels] = useState<Models.Document[]>([]);
   const [allOrders, setAllOrders] = useState<Models.Document[]>([]);
 
+  const isBusiness = userData?.subrole === "business";
+
   const createOrder = async (
     packageDetails: PackageDetails,
     deliveryDetails: DeliveryDetails,
@@ -69,7 +71,7 @@ const PackageOrderProvider = ({ children }: { children: React.ReactNode }) => {
         packageName: packageDetails.name,
         packageTexture: packageDetails.texture,
         packageImage: packageImage?.$id,
-        senderName: userData?.name,
+        senderName: isBusiness ? userData?.businessName : userData?.name,
         senderPhone: userData?.phone,
         senderEmail: userData?.email,
         isPaid: isPaid,

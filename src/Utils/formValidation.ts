@@ -1,9 +1,9 @@
 import { toast } from "sonner";
 
 export const registerFormValidation = (
-  form: RegisterFormTypes,
-  setErrors: (errors: RegisterFormTypes) => void,
-  errors: RegisterFormTypes
+  form: FormType,
+  setErrors: (errors: FormType) => void,
+  errors: FormType
 ) => {
   if (!form.name) {
     setErrors({ ...errors, name: "Name is required" });
@@ -13,8 +13,8 @@ export const registerFormValidation = (
     setErrors({ ...errors, email: "Email is required" });
     return false;
   }
-  if (!form.phone) {
-    setErrors({ ...errors, phone: "Phone number is required" });
+  if (!form.phoneNumber) {
+    setErrors({ ...errors, phoneNumber: "Phone number is required" });
     return false;
   }
   if (!form.password) {
@@ -119,20 +119,20 @@ export const dispatchFormValidation = (
 };
 
 export const restaurantRegistrationFormValidation = (
-  form: RestaurantRegistrationFormTypes,
-  setErrors: (errors: RestaurantRegistrationFormTypes) => void,
-  errors: RestaurantRegistrationFormTypes
+  form: FormType,
+  setErrors: (errors: FormType) => void,
+  errors: FormType
 ) => {
-  if (!form.restaurantName) {
-    setErrors({ ...errors, restaurantName: "Restaurant name is required" });
+  if (!form.name) {
+    setErrors({ ...errors, name: "Restaurant name is required" });
     return false;
   }
   if (!form.email) {
     setErrors({ ...errors, email: "Email is required" });
     return false;
   }
-  if (!form.phone) {
-    setErrors({ ...errors, phone: "Phone number is required" });
+  if (!form.phoneNumber) {
+    setErrors({ ...errors, phoneNumber: "Phone number is required" });
     return false;
   }
   if (!form.address) {

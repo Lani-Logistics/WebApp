@@ -90,7 +90,7 @@ const Login = () => {
       <div className="flex items-center text-sub text-sm center my-6 gap-3">
         <p>Don't have an account?</p>
         <Link
-          to="/role"
+          to="/register"
           className="bg-primary/10 text-primary btn px-4 py-2 rounded-full"
         >
           <UserRoundPlus size={18} />

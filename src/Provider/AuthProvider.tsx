@@ -8,7 +8,6 @@ import client, {
   USERS,
   ADMIN,
   TRANSACTIONS,
-  RESTAURANTS,
 } from "@/Backend/appwrite";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +40,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getUsers();
   }, []);
 
-  const register = async (form: RegisterFormTypes) => {
+  const register = async (form: FormType) => {
     setLoading(true);
     try {
       const user = await account.create(
@@ -72,68 +71,32 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const createUserdata = async (form: RegisterFormTypes, id: string) => {
+  const createUserdata = async (form: FormType, id: string) => {
     try {
       await databases.createDocument(DB, USERS, id, {
         userId: id,
         name: form.name,
         email: form.email,
-        phone: form.phone,
+        phone: form.phoneNumber,
         role: form.role,
-        location: form.city,
-        companyName: form.company,
-      });
-    } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
-    }
-  };
-
-  const registerRestaurant = async (form: RestaurantRegistrationFormTypes) => {
-    setLoading(true);
-    try {
-      const res = await account.create(
-        ID.unique(),
-        form.email,
-        form.password,
-        form.restaurantName
-      );
-      await account.createEmailPasswordSession(form.email, form.password);
-      const session = await account.get();
-      setUser(session);
-      await createRestaurantUserdata(form, res.$id);
-      console.log(session);
-      await getRestaurantUserData();
-      toast.success("Account created successfully");
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createRestaurantUserdata = async (
-    form: RestaurantRegistrationFormTypes,
-    id: string
-  ) => {
-    try {
-      await databases.createDocument(DB, RESTAURANTS, id, {
-        restaurantId: id,
-        name: form.restaurantName,
-        email: form.email,
-        phone: form.phone,
+        location: form.location,
+        companyName: form.businessName,
         address: form.address,
-        lat: form.lat,
-        lon: form.lon,
-        location: form.city,
+        businessName: form.businessName,
+        businessRegNo: form.businessRegNo,
+        subrole: form.subRole,
+        lat: form.lat.toString(),
+        lon: form.lon.toString(),
       });
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
     }
   };
+
+  
+
+
 
   const getUserData = useCallback(async () => {
     const user = await account.get();
@@ -147,21 +110,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const getRestaurantUserData = useCallback(async () => {
-    const user = await account.get();
-    if (!user?.$id) throw new Error("User not found");
-    try {
-      const res = await databases.getDocument(DB, RESTAURANTS, user.$id);
-      setUserData(res);
-    } catch (error) {
-      console.log(error);
-      // throw new Error((error as Error).message);
-    }
-  }, []);
 
   const getRestaurants = useCallback(async () => {
     try {
-      const res = await databases.listDocuments(DB, RESTAURANTS);
+      const res = await databases.listDocuments(DB, USERS, [
+        Query.equal("role", ["restaurant"]),
+        Query.orderDesc("$createdAt"),
+      ]);
       setRestaurants(res.documents);
     } catch (error) {
       console.log(error); 
@@ -171,9 +126,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     getUserData();
-    getRestaurantUserData();
     getRestaurants();
-  }, [getUserData, getRestaurantUserData, getRestaurants]);
+  }, [getUserData, getRestaurants]);
 
   const login = async (form: LoginFormTypes) => {
     setLoading(true);
@@ -182,7 +136,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const session = await account.get();
       setUser(session);
       console.log(session);
-      await getRestaurantUserData();
       await getUserData();
       if (userData) {
         navigate("/dashboard");
@@ -224,11 +177,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         if (isMounted) {
           setUser(session);
-          if (userData?.role === "restaurant") {
-            await getRestaurantUserData();
-          } else {
+         
             await getUserData();
-          }
+          
         }
       } catch (error) {
         console.error(error);
@@ -242,7 +193,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigate, getUserData, userData?.role, getRestaurantUserData]);
+  }, [navigate, getUserData, userData?.role]);
 
   const updatePhoneNumber = async (phone: string) => {
     setLoading(true);
@@ -427,9 +378,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateRestaurant = async (restaurant: Models.Document) => {
     setLoading(true);
     try {
-      await databases.updateDocument(DB, RESTAURANTS, restaurant.$id, {
+      await databases.updateDocument(DB, USERS, restaurant.$id, {
         isVerified: true,
       });
+    } catch (error) {
+      console.log(error);
+      throw new Error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyUser = async (id: string) => {
+    setLoading(true);
+    try {
+      await databases.updateDocument(DB, USERS, id, {
+        isVerified: true,
+      });
+      await getUserData()
+      navigate("/admin/users")
     } catch (error) {
       console.log(error);
       throw new Error((error as Error).message);
@@ -481,12 +448,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     transactions,
     createTransaction,
     getTransactions,
-    registerRestaurant,
     updateCompanyName,
     updateCompanyAddress,
     updateCompanyEmail,
     restaurants,
     updateRestaurant,
+    verifyUser,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

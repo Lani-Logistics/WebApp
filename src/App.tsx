@@ -1,12 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import { Onboarding, SplashSceen, Home, Tracking } from "@/Screens/Home";
 import {
-  Role,
-  Register,
+  Registration,
   Login,
   ResetPassword,
   NewPassword,
-  Location,
 } from "@/Screens/Auth";
 import {
   Dashboard,
@@ -24,6 +22,8 @@ import {
   UserDetails,
   OrdersManagement,
   Restaurants,
+  FlatRates,
+  Notifications as AdminNotifications
 } from "@/Screens/Admin";
 import { ScrollToTop } from "@/Components/UI";
 import { Toaster } from "sonner";
@@ -51,12 +51,10 @@ const App = () => {
         <Route path="/track" element={<Tracking />} />
         <Route path="/app" element={<SplashSceen />} />
         <Route path="/home" element={<Onboarding />} />
-        <Route path="/role" element={<Role />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Registration />} />
         <Route path="/login" element={<Login />} />
         <Route path="/reset" element={<ResetPassword />} />
         <Route path="/new-password" element={<NewPassword />} />
-        <Route path="/location" element={<Location />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoutes />}>
@@ -78,6 +76,8 @@ const App = () => {
           <Route path="/admin/users/:id" element={<UserDetails />} />
           <Route path="/admin/orders" element={<OrdersManagement />} />
           <Route path="/admin/restaurants" element={<Restaurants />} />
+          <Route path="/admin/settings/flat-rates" element={<FlatRates />} />
+          <Route path="/admin/settings/notifications" element={<AdminNotifications />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

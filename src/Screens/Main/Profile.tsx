@@ -8,14 +8,15 @@ import {
 import { useAuth } from "@/Hooks";
 const Profile = () => {
   const { userData } = useAuth();
-  const isRider = userData?.role === "rider";
+  const isCompany = userData?.subrole === "company";
+  
   return (
     <>
       <MainLayout title="Profile">
         <div className="space-y-4">
           <ProfileCard />
           <ContactInformation />
-          {isRider && <CompanyInformation />}
+          {isCompany && <CompanyInformation />}
           <AccountActions />
         </div>
       </MainLayout>

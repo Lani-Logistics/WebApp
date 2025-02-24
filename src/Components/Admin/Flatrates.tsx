@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Subtitle } from "../UI";
 import { Input } from "../UI";
 import { useAdmin } from "@/Hooks";
 import { toast } from "sonner";
@@ -30,7 +29,6 @@ const Flatrates = () => {
   return (
     <>
       <div>
-        <Subtitle title="Flat Rates" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-background border border-line rounded-xl p-4">
             <div>

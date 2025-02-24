@@ -1,3 +1,21 @@
+
+
+interface FormType {
+  role?: string;
+  subRole?: string;
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  businessName: string;
+  businessRegNo: string;
+  address: string;
+  location: string;
+  lat: number;
+  lon: number;
+}
+
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
@@ -125,7 +143,7 @@ interface AuthContextType {
   user: Models.User<Models.Preferences> | null;
   userData: Models.Document | null;
   loading: boolean;
-  register: (form: RegisterFormTypes) => Promise<void>;
+  register: (form: FormType) => Promise<void>;
   login: (form: LoginFormTypes) => Promise<void>;
   logout: () => Promise<void>;
   updatePhoneNumber: (phone: string) => Promise<void>;
@@ -145,12 +163,12 @@ interface AuthContextType {
     description: string
   ) => Promise<void>;
   getTransactions: () => Promise<void>;
-  registerRestaurant: (form: RestaurantRegistrationFormTypes) => Promise<void>;
   updateCompanyName: (name: string) => Promise<void>;
   updateCompanyAddress: (address: string) => Promise<void>;
   updateCompanyEmail: (email: string) => Promise<void>;
   restaurants: Models.Document[];
   updateRestaurant: (restaurant: Models.Document) => Promise<void>;
+  verifyUser: (id: string) => Promise<void>;
 }
 
 interface PackageOrderContextType {

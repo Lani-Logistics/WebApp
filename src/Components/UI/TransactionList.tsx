@@ -7,8 +7,14 @@ const TransactionList = () => {
   const { transactions } = useTransactions();
   return (
     <>
-      <div className="flex flex-col gap-4 bg-background rounded-lg p-4">
-        {transactions.map((x) => {
+      {transactions.length === 0 && (
+        <div className="flex flex-col gap-4 bg-background rounded-lg p-4">
+          <p className="text-sub text-sm text-center">No transactions yet!</p>
+        </div>
+      )}
+      {transactions.length > 0 && (
+        <div className="flex flex-col gap-4 bg-background rounded-lg p-4">
+          {transactions.map((x) => {
           const { category, amount, status, type, description } = x;
           const isCredit = type === "credit";
           const isDeposit = category === "deposit";
@@ -59,9 +65,10 @@ const TransactionList = () => {
                 </div>
               </div>
             </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 };

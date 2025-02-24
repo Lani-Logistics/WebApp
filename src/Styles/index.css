@@ -27,7 +27,7 @@
 
 @theme{
   --font-sans: 'Instrument Sans', sans-serif;
-  --font-sora: 'Outfit', sans-serif;
+  --font-sora: 'Sora', sans-serif;
   --color-primary: var(--primary-1);
   --color-primary-2: var(--primary-2);
   --color-secondary: var(--secondary);
@@ -67,7 +67,7 @@ body {
 }
 
 .btn{
-  @apply flex items-center justify-center gap-2 font-sora font-medium rounded-full text-base;
+  @apply flex items-center justify-center gap-2 font-sora font-medium rounded-full text-sm;
 }
 
 button{

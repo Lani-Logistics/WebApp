@@ -88,7 +88,7 @@ const Onboarding = () => {
                 Login
               </Link>
               <Link
-                to="/role"
+                to="/register"
                 className="btn bg-background gap-2 text-main min-h-10 flex-1 rounded-full"
               >
                 <UserRoundPlus size={18}/>

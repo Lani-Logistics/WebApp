@@ -1,4 +1,4 @@
-import { CookingPot, LayoutDashboard, Package, UsersRound, Wallet, CircleUserRound } from "lucide-react";
+import {  LayoutDashboard, Package, Wallet, UserRound, BellPlus, DollarSign } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/Hooks";
 const Navbar = () => {
@@ -7,6 +7,7 @@ const Navbar = () => {
 
   const isAdminRoute = location.pathname.includes("/admin");
   const isRider = userData?.role === "rider";
+
 
   const userLinks = [
     {
@@ -28,7 +29,7 @@ const Navbar = () => {
   
     {
       name: "Profile",
-      icon: CircleUserRound,
+      icon: UserRound,
       to: "/profile",
     },
   ];
@@ -39,24 +40,20 @@ const Navbar = () => {
       icon: LayoutDashboard,
       to: "/admin",
     },
+ 
     {
-      name: "Restaurants",
-      icon: CookingPot,
-      to: "/admin/restaurants",
+      name: "Flat Rates",
+      icon: DollarSign,
+      to: "/admin/settings/flat-rates",
     },
     {
-      name: "Orders",
-      icon: Package,
-      to: "/admin/orders",
-    },
-    {
-      name: "Users",
-      icon: UsersRound,
-      to: "/admin/users",
+      name: "Notifications",
+      icon: BellPlus,
+      to: "/admin/settings/notifications",
     },
     {
       name: "Profile",
-      icon: CircleUserRound,
+      icon: UserRound,
       to: "/profile",
     },
   ];

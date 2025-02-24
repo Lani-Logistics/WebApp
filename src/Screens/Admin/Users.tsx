@@ -4,6 +4,7 @@ import { Filter, UserRound } from "lucide-react";
 import { Search } from "@/Components/UI";
 import { useAuth } from "@/Hooks";
 import { MainLayout } from "@/Layouts";
+import clsx from "clsx";
 const Users = () => {
   const { users } = useAuth();
   const [search, setSearch] = useState("");
@@ -98,9 +99,18 @@ const Users = () => {
                     >
                       {user.role}
                     </span>
-                    {user.city && (
-                      <span className="text-xs text-sub">📍 {user.city}</span>
+                    {user.location && (
+                      <span className="text-xs text-sub">📍 {user.location}</span>
                     )}
+                    {user.role === "rider" && <div className="flex items-center gap-1">
+                      &bull;
+                      <span className={clsx(
+                        user.isVerified ? "text-green-500" : "text-yellow-500",
+                        "text-xs"
+                      )}>
+                        {user.isVerified ? "Verified" : "Unverified"}
+                      </span>
+                    </div>}
                   </div>
                 </div>
               </div>
