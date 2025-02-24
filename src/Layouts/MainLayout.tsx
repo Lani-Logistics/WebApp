@@ -5,6 +5,7 @@ const MainLayout = ({title, children}: {title?: string, children: React.ReactNod
   const { userData } = useAuth();
   const isRider = userData?.role === "rider";
   const isVerified = userData?.isVerified === true;
+  const notVerifiedRider = isRider && !isVerified;
   return (
    <>
       <Header />
@@ -14,7 +15,7 @@ const MainLayout = ({title, children}: {title?: string, children: React.ReactNod
         )}
         <div className="pb-16 mb-16">{children}</div>
       </main>
-      {isRider && isVerified && <Navbar />}
+      {!notVerifiedRider && <Navbar />}
    </>
   )
 }
