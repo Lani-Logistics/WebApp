@@ -16,10 +16,10 @@ const ProfileCard = () => {
   const name = isBusiness ? businessName : username;
   return (
     <div className="bg-background border border-line rounded-xl p-6 relative">
-      <div className="absolute top-4 right-4 center gap-2 bg-mid px-2 py-1 capitalize rounded-full shadow">
+    { subrole && <div className="absolute top-4 right-4 center gap-2 bg-mid px-2 py-1 capitalize rounded-full shadow">
         <div className="p-1 bg-primary rounded-full" />
         <span className="text-main text-xs font-medium">{subrole}</span>
-      </div>
+      </div>}
       <div className="flex md:flex-row flex-col gap-4">
         <div className="w-16 h-16 rounded-full bg-background_2 overflow-hidden">
           <img
